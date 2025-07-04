@@ -1,0 +1,32 @@
+<?php
+// Get visitor IP and User-Agent
+$ip = $_SERVER['REMOTE_ADDR'];
+$userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+// Get IP info using ip-api.com
+$details = json_decode(file_get_contents("http://ip-api.com/json/$ip"));
+
+// Get relevant info
+$country = $details->country;
+$region = $details->regionName;
+$city = $details->city;
+$isp = $details->isp;
+$coordinates = "$details->lat, $details->lon";
+
+// Format the log entry
+$log = "----------------------------\n";
+$log .= "Time: " . date("Y-m-d H:i:s") . "\n";
+$log .= "IP: $ip\n";
+$log .= "ISP: $isp\n";
+$log .= "Location: $city, $region, $country\n";
+$log .= "Coordinates: $coordinates\n";
+$log .= "Browser: $userAgent\n";
+$log .= "----------------------------\n\n";
+
+// Save to a local log file
+file_put_contents("logs.txt", $log, FILE_APPEND);
+
+// Optional: Redirect to another page
+header("Location: https://example.com"); // <- Replace with your destination
+exit();
+?>
